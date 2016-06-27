@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Choose a drink{% endblock %}
+{% block body %}
+    <h1 class="text-center">ORDER A DRINK</h1><br />
+
+    {% for drink, drink_details in drinks.items() %}
+    <button type="button"
+            class="btn btn-primary btn-lg col-xs-12 col-sm-6 col-lg-4"
+            data-toggle="modal"
+            data-target="#formModal"
+            data-drink="{{ drink }}"
+            data-drink-article="{{ drink_details['article'] }}"
+            data-drink-singular="{{ drink_details['singular'] }}">
+        {{ drink_details['display'] }}
+    </button>
+    {% endfor %}
+
+    <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="/" method="post">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title" id="formModalLabel">Who is this for?</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input name="customer" title="customer" type="text" class="form-control" id="customer" value="{{ customer or '' }}" placeholder="Boaty McBoatface"/>
+                            <input name="drink" title="drink" type="hidden" id="drink"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="submit">Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript">
+        $('#formModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var drink = button.data('drink');
+            var drink_article = button.data('drink-article');
+            var drink_singular = button.data('drink-singular');
+            var submit = $('#submit');
+            var customer = $('#customer');
+
+            // Fill in the hidden 'drink' field with the drink type.
+            $('#drink').val(drink);
+
+            // Make the submit button more explicit.
+            submit.text('Order ' + drink_article + ' ' + drink_singular);
+
+            // Disable the submit button unless a customer name is entered.
+            submit.prop('disabled', customer.val() == '');
+            customer.keyup(function () {
+                submit.prop('disabled', this.value == '');
+            });
+
+            // Make sure that the customer field is focused.
+            customer.focus();  // TODO: why isn't focus working?
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{
+  "latte": {
+    "rank": 1,
+    "article": "a",
+    "singular": "latte",
+    "display": "Latte"
+  },
+  "frozen_latte": {
+    "rank": 2,
+    "article": "a",
+    "singular": "frozen latte",
+    "display": "Frozen Latte"
+  },
+  "iced_latte": {
+    "rank": 3,
+    "article": "an",
+    "singular": "iced latte",
+    "display": "Iced Latte"
+  },
+  "cappuccino": {
+    "rank": 4,
+    "article": "a",
+    "singular": "cappuccino",
+    "display": "Cappuccino"
+  },
+  "cortado": {
+    "rank": 5,
+    "article": "a",
+    "singular": "cortado",
+    "display": "Cortado"
+  }
+}

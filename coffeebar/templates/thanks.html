@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Order placed{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Order placed for {{ customer }}!</h1>
+            <p>Check in with the barista if you have special instructions, like adding sweetener.</p>
+            <form action="/cancel" method="post" class="hidden-xs" id="large-form">
+                <div class="btn-group btn-group-justified">
+                    <a href="javascript:{}" type="submit" class="btn btn-default btn-lg" role="button" onclick="$('#large-form').submit();">
+                        Whoops! <strong>Cancel {{ drink_details['singular'] }}</strong>.
+                    </a>
+                    <a class="btn btn-primary btn-lg" href="/" role="button">Order another...</a>
+                </div>
+            </form>
+            <form action="/cancel" method="post" class="visible-xs" id="small-form">
+                <div class="btn-group btn-group-vertical" style="width: 100%">
+                    <a href="javascript:{}" type="submit" class="btn btn-default btn-lg" role="button" onclick="$('#small-form').submit();">
+                        Whoops! <strong>Cancel {{ drink_details['singular'] }}</strong>.
+                    </a>
+                    <a class="btn btn-primary btn-lg" href="/" role="button">Order again...</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
