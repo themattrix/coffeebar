@@ -41,13 +41,24 @@
 {% block scripts %}
     {{ super() }}
     <script type="text/javascript">
-        $('#formModal').on('show.bs.modal', function (event) {
+        (function($){
+            $.fn.focusTextToEnd = function () {
+                this.focus();
+                var $thisVal = this.val();
+                this.val('').val($thisVal);
+                return this;
+            }
+        }(jQuery));
+
+        var modal = $('#formModal');
+        var customer = $('#customer');
+
+        modal.on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var drink = button.data('drink');
             var drink_article = button.data('drink-article');
             var drink_singular = button.data('drink-singular');
             var submit = $('#submit');
-            var customer = $('#customer');
 
             // Fill in the hidden 'drink' field with the drink type.
             $('#drink').val(drink);
@@ -60,9 +71,19 @@
             customer.on('change keyup blur input', function () {
                 submit.prop('disabled', this.value == '');
             });
+        });
+
+        modal.on('shown.bs.modal', function () {
+            var urlReplace = '#' + $(this).attr('id');
+            history.pushState(null, '', urlReplace);
 
             // Make sure that the customer field is focused.
-            customer.focus();  // TODO: why isn't focus working?
+            customer.focusTextToEnd();
+        });
+
+        // If a pushstate has previously happened and the back button is clicked, hide any modals.
+        $(window).on('popstate', function () {
+            modal.modal('hide');
         });
     </script>
 {% endblock %}
