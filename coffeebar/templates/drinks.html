@@ -57,7 +57,7 @@
 
             // Disable the submit button unless a customer name is entered.
             submit.prop('disabled', customer.val() == '');
-            customer.keyup(function () {
+            customer.on('change keyup blur input', function () {
                 submit.prop('disabled', this.value == '');
             });
 
