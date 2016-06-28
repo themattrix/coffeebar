@@ -1,6 +1,7 @@
 import collections
 
 import flask
+import flask_limiter.util
 import wtforms
 
 from . import drinks
@@ -8,6 +9,12 @@ from . import twilio_sms
 
 
 app = flask.Flask(__name__)
+
+limiter = flask_limiter.Limiter(
+    app=app,
+    key_func=flask_limiter.util.get_remote_address)
+
+rate_limit_post = limiter.limit('5/day', exempt_when=lambda: flask.request.method != 'POST')
 
 
 class OrderForm(wtforms.Form):
@@ -21,6 +28,7 @@ class OrderForm(wtforms.Form):
 
 
 @app.route('/', methods=('GET', 'POST'))
+@rate_limit_post
 def order():
     if flask.request.method == 'GET':
         return flask.render_template(
@@ -54,6 +62,7 @@ def thanks():
 
 
 @app.route('/cancel', methods=('GET', 'POST'))
+@rate_limit_post
 def cancel():
     previous_order = get_previous_order()
 
