@@ -3,30 +3,28 @@
     "rank": 1,
     "article": "a",
     "singular": "latte",
-    "display": "Latte"
-  },
-  "frozen_latte": {
-    "rank": 2,
-    "article": "a",
-    "singular": "frozen latte",
-    "display": "Frozen Latte"
-  },
-  "iced_latte": {
-    "rank": 3,
-    "article": "an",
-    "singular": "iced latte",
-    "display": "Iced Latte"
+    "display": "Latte",
+    "image": "images/latte.png"
   },
   "cappuccino": {
-    "rank": 4,
+    "rank": 2,
     "article": "a",
     "singular": "cappuccino",
-    "display": "Cappuccino"
+    "display": "Cappuccino",
+    "image": "images/cappuccino.png"
   },
   "cortado": {
-    "rank": 5,
+    "rank": 3,
     "article": "a",
     "singular": "cortado",
-    "display": "Cortado"
+    "display": "Cortado",
+    "image": "images/cortado.png"
+  },
+  "espresso": {
+    "rank": 4,
+    "article": "an",
+    "singular": "espresso",
+    "display": "Espresso",
+    "image": "images/espresso.png"
   }
 }

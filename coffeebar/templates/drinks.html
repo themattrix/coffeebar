@@ -4,15 +4,17 @@
     <h1 class="text-center">ORDER A DRINK</h1><br />
 
     {% for drink, drink_details in drinks.items() %}
-    <button type="button"
-            class="btn btn-primary btn-lg col-xs-12 col-sm-6 col-lg-4"
-            data-toggle="modal"
-            data-target="#formModal"
-            data-drink="{{ drink }}"
-            data-drink-article="{{ drink_details['article'] }}"
-            data-drink-singular="{{ drink_details['singular'] }}">
-        {{ drink_details['display'] }}
-    </button>
+    <a type="button"
+       class="btn btn-primary btn-lg col-xs-12 col-sm-6 col-lg-4"
+       data-toggle="modal"
+       data-target="#formModal"
+       data-drink="{{ drink }}"
+       data-drink-article="{{ drink_details['article'] }}"
+       data-drink-singular="{{ drink_details['singular'] }}"
+       style="background: none; border: none; box-shadow: none">
+        <p><img class="img-responsive" src="{{ url_for('static', filename=drink_details['image']) }}" alt="{{ drink_details['display'] }}" /></p>
+        <p class="drink-name">{{ drink_details['display'] }}</p>
+    </a>
     {% endfor %}
 
     <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel">
@@ -66,6 +68,9 @@
             // Make the submit button more explicit.
             submit.text('Order ' + drink_article + ' ' + drink_singular);
 
+            // Make the title more explicit.
+            $('#formModalLabel').text('Who is this ' + drink_singular + ' for?');
+
             // Disable the submit button unless a customer name is entered.
             submit.prop('disabled', customer.val() == '');
             customer.on('change keyup blur input', function () {
@@ -86,4 +91,15 @@
             modal.modal('hide');
         });
     </script>
+
+    <style>
+        h1 {
+            color: #ffffff;
+        }
+        .drink-name {
+            position: relative;
+            right: 9%;
+            font-size: larger;
+        }
+    </style>
 {% endblock %}
