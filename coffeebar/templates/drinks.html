@@ -116,12 +116,8 @@
             var modal = $(this);
             var submit = modal.find('.btn-primary');
 
-            submit.click(function () {
-                modal.modal('hide');
-            });
-
             // Set the data-drink attribute to right drink.
-            submit.attr('data-drink', drink);
+            submit.data('drink', drink);
 
             // Make the submit button more explicit.
             submit.text('Order ' + drinks[drink]['article'] + ' ' + drinks[drink]['singular']);
@@ -129,6 +125,10 @@
             // Populate the recipe.
             $('#recipe_title').text(drinks[drink]['display'] + ' Recipe');
             $('#recipe_body').html(_.join(_.map(drinks[drink]['recipe'], ingredient_to_dom).reverse(), ''));
+
+            submit.click(function () {
+                modal.modal('hide');
+            });
         });
 
         recipe_modal.on('shown.bs.modal', function () {
