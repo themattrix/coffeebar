@@ -4,27 +4,44 @@
     "article": "a",
     "singular": "latte",
     "display": "Latte",
-    "image": "images/latte.png"
+    "image": "images/latte.png",
+    "recipe": [
+      ["60mL", "espresso (double shot)"],
+      ["300mL", "steamed milk"],
+      ["2mL", "foamed milk"]
+    ]
   },
   "cappuccino": {
     "rank": 2,
     "article": "a",
     "singular": "cappuccino",
     "display": "Cappuccino",
-    "image": "images/cappuccino.png"
+    "image": "images/cappuccino.png",
+    "recipe": [
+      ["60mL", "espresso (double shot)"],
+      ["60mL", "steamed milk"],
+      ["60mL", "foamed milk"]
+    ]
   },
   "cortado": {
     "rank": 3,
     "article": "a",
     "singular": "cortado",
     "display": "Cortado",
-    "image": "images/cortado.png"
+    "image": "images/cortado.png",
+    "recipe": [
+      ["60mL", "espresso (double shot)"],
+      ["30mL", "foamed milk"]
+    ]
   },
   "espresso": {
     "rank": 4,
     "article": "an",
     "singular": "espresso",
     "display": "Espresso",
-    "image": "images/espresso.png"
+    "image": "images/espresso.png",
+    "recipe": [
+      ["60mL", "espresso (double shot)"]
+    ]
   }
 }

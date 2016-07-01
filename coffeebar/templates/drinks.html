@@ -4,26 +4,19 @@
     <h1 class="text-center">ORDER A DRINK</h1><br />
 
     {% for drink, drink_details in drinks.items() %}
-    <a type="button"
-       class="btn btn-primary btn-lg col-xs-12 col-sm-6 col-lg-4"
-       data-toggle="modal"
-       data-target="#formModal"
-       data-drink="{{ drink }}"
-       data-drink-article="{{ drink_details['article'] }}"
-       data-drink-singular="{{ drink_details['singular'] }}"
-       style="background: none; border: none; box-shadow: none">
-        <p><img class="img-responsive" src="{{ url_for('static', filename=drink_details['image']) }}" alt="{{ drink_details['display'] }}" /></p>
-        <p class="drink-name">{{ drink_details['display'] }}</p>
-    </a>
+    <div class="col-xs-12 col-sm-6 col-lg-4" style="text-align: center;">
+        <p><a data-toggle="modal" data-target="#order" data-drink="{{ drink }}"><img class="img-responsive" src="{{ url_for('static', filename=drink_details['image']) }}" alt="{{ drink_details['display'] }}" /></a></p>
+        <p><a data-toggle="modal" data-target="#recipe" data-drink="{{ drink }}"><span class="drink-name">{{ drink_details['display'] }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a></p>
+    </div>
     {% endfor %}
 
-    <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel">
+    <div class="modal fade" id="order" tabindex="-1" role="dialog" aria-labelledby="order_title">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form action="/" method="post">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h3 class="modal-title" id="formModalLabel">Who is this for?</h3>
+                        <h3 class="modal-title" id="order_title">Who is this for?</h3>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -32,17 +25,39 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="submit">Order</button>
+                        <button type="submit" class="btn btn-primary">Order</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="recipe" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="recipe_title"></h3>
+                </div>
+                <div class="modal-body">
+                    <p id="recipe_body"></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#order" data-drink="">Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 {% block scripts %}
     {{ super() }}
+
+    <script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js"></script>
+
     <script type="text/javascript">
+        drinks = {{ drinks|tojson|safe }};
+
         (function($){
             $.fn.focusTextToEnd = function () {
                 this.focus();
@@ -52,43 +67,78 @@
             }
         }(jQuery));
 
-        var modal = $('#formModal');
-        var customer = $('#customer');
+        var order_modal = $('#order');
+        var customer_input = $('#customer');
 
-        modal.on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var drink = button.data('drink');
-            var drink_article = button.data('drink-article');
-            var drink_singular = button.data('drink-singular');
-            var submit = $('#submit');
+        order_modal.on('show.bs.modal', function (event) {
+            var triggering_element = $(event.relatedTarget);
+            var drink = triggering_element.data('drink');
+            var submit = $(this).find('.btn-primary');
 
             // Fill in the hidden 'drink' field with the drink type.
             $('#drink').val(drink);
 
             // Make the submit button more explicit.
-            submit.text('Order ' + drink_article + ' ' + drink_singular);
+            submit.text('Order ' + drinks[drink]['article'] + ' ' + drinks[drink]['singular']);
 
             // Make the title more explicit.
-            $('#formModalLabel').text('Who is this ' + drink_singular + ' for?');
+            $('#order_title').text('Who is this ' + drinks[drink]['singular'] + ' for?');
 
             // Disable the submit button unless a customer name is entered.
-            submit.prop('disabled', customer.val() == '');
-            customer.on('change keyup blur input', function () {
+            submit.prop('disabled', customer_input.val() == '');
+            customer_input.on('change keyup blur input', function () {
                 submit.prop('disabled', this.value == '');
             });
         });
 
-        modal.on('shown.bs.modal', function () {
+        order_modal.on('shown.bs.modal', function () {
             var urlReplace = '#' + $(this).attr('id');
             history.pushState(null, '', urlReplace);
 
             // Make sure that the customer field is focused.
-            customer.focusTextToEnd();
+            customer_input.focusTextToEnd();
         });
 
-        // If a pushstate has previously happened and the back button is clicked, hide any modals.
+        var recipe_modal = $('#recipe');
+
+        function ingredient_to_dom(ingredient) {
+            return (
+                '<div class="ingredient">' +
+                '<span class="ingredient-amount">' + ingredient[0] + '</span>&nbsp;' +
+                '<span class="ingredient-name">' + ingredient[1] + '</span>' +
+                '</div>'
+            );
+        }
+
+        recipe_modal.on('show.bs.modal', function (event) {
+            var triggering_element = $(event.relatedTarget);
+            var drink = triggering_element.data('drink');
+            var modal = $(this);
+            var submit = modal.find('.btn-primary');
+
+            submit.click(function () {
+                modal.modal('hide');
+            });
+
+            // Set the data-drink attribute to right drink.
+            submit.attr('data-drink', drink);
+
+            // Make the submit button more explicit.
+            submit.text('Order ' + drinks[drink]['article'] + ' ' + drinks[drink]['singular']);
+
+            // Populate the recipe.
+            $('#recipe_title').text(drinks[drink]['display'] + ' Recipe');
+            $('#recipe_body').html(_.join(_.map(drinks[drink]['recipe'], ingredient_to_dom).reverse(), ''));
+        });
+
+        recipe_modal.on('shown.bs.modal', function () {
+            var urlReplace = '#' + $(this).attr('id');
+            history.pushState(null, '', urlReplace);
+        });
+
         $(window).on('popstate', function () {
-            modal.modal('hide');
+            order_modal.modal('hide');
+            recipe_modal.modal('hide');
         });
     </script>
 
@@ -96,8 +146,17 @@
         h1 {
             color: #ffffff;
         }
+        a {
+            color: #ffffff !important;
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
         .drink-name {
             font-size: larger;
+            font-weight: bolder;
+        }
+        .ingredient-amount {
             font-weight: bolder;
         }
     </style>
